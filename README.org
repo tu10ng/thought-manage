@@ -1,5 +1,90 @@
+* demo
+
+#+begin_quote
+'hello world' program should output 'conosuba' instead
+<-_after watching conosuba_
+
+should sleep at 12pm
+<-_not sleepy_
+should sleep at 10pm
+<-_for good spirits_
+sleep at 11pm
+<-_school kills power after 11pm_
+
+#+end_quote
+
+#+begin_quote
+'hello world' program should output 'conosuba' instead
+<-_after watching conosuba_
+
+should sleep at 10pm
+<-_not sleepy_...
+
+#+end_quote
+
+* how to implement
+not sure
+** keywords
+- whole thought
+  + current thought
+  + old thought
+- incident
+- hide indicator
+
+** structure
+#+begin_quote
+current thought
+<-incident
+[old thought
+<-incident]...
+BLANK LINES
+#+end_quote
+incident could have chars like _ to make the editor underline the incident (not sure)
+
+#+begin_quote
+current thought
+<-incident[...]
+[old thought
+<-incident]...[...]
+[old thought
+<-incident]
+BLANK LINES
+#+end_quote
+
+** how to add thoughts
+use two seperate function
+- `add new thought to current thought'
+- `add new thought
+
+readin the thought & incident, and move the whole thought to the front of the file
+
+** how to hide old thoughts
+*** to show everything in one file, and use editors `hiding block' feature to clear away old thoughts
+- easy git management
+
+*** use a program to manage the pure text file's content, and sending commands to program to get old thoughts
+- need way to export and inport data
+  
+** how to only show precise level of old thoughts
+one tab on the level shows one level, one shift tab hides all
+** how to manage `multiple incident to one thought'
+- no special treatment
+  #+begin_quote
+happy <-_reading_- happy <-_gaming_-
+  #+end_quote
+
+** incident could be a long story, maybe need to be paragraph
+not sure
+
+maybe wouldn't happen
+
 * the reason behind the project
 - i should gather all my thoughts
+  
   show the thought i currently holding in my head, how thoughts evolved, and the incident which caused the change
+  
 - `first thoughts' are pulse, `second thoughts' are rational. i can't hold both thoughts in my head at the same time, maybe i should use a buffer outside my head to get rid of the first thoughts
+  
 - a good tool can help me record my thoughts
+
+- maybe its just another presentation of diary
