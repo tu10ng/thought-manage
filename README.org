@@ -1,0 +1,5 @@
+* the reason behind the project
+- i should gather all my thoughts
+  show the thought i currently holding in my head, how thoughts evolved, and the incident which caused the change
+- `first thoughts' are pulse, `second thoughts' are rational. i can't hold both thoughts in my head at the same time, maybe i should use a buffer outside my head to get rid of the first thoughts
+- a good tool can help me record my thoughts
