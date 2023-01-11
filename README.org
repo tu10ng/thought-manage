@@ -2,23 +2,23 @@
 
 #+begin_quote
 'hello world' program should output 'conosuba' instead
-<-_after watching conosuba_
+<-after watching conosuba
 
 should sleep at 12pm
-<-_not sleepy_
+<-not sleepy
 should sleep at 10pm
-<-_for good spirits_
+<-for good spirits
 sleep at 11pm
-<-_school kills power after 11pm_
+<-school kills power after 11pm
 
 #+end_quote
 
 #+begin_quote
 'hello world' program should output 'conosuba' instead
-<-_after watching conosuba_
+<-after watching conosuba
 
 should sleep at 10pm
-<-_not sleepy_...
+<-not sleepy...
 
 #+end_quote
 
@@ -39,15 +39,18 @@ current thought
 <-incident]...
 BLANK LINES
 #+end_quote
-incident could have chars like _ to make the editor underline the incident (not sure)
 
 #+begin_quote
 current thought
-<-incident[...]
-[old thought
-<-incident]...[...]
-[old thought
-<-incident]
+<-incident
+old thought
+<-incident...
+BLANK LINES
+#+end_quote
+
+#+begin_quote
+current thought
+<-incident...
 BLANK LINES
 #+end_quote
 
@@ -61,6 +64,7 @@ readin the thought & incident, and move the whole thought to the front of the fi
 ** how to hide old thoughts
 *** to show everything in one file, and use editors `hiding block' feature to clear away old thoughts
 - easy git management
+- im not good at elisp
 
 *** use a program to manage the pure text file's content, and sending commands to program to get old thoughts
 - need way to export and inport data
