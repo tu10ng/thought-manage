@@ -51,6 +51,14 @@
          (looking-back current-thought-regexp-back)
          (looking-at current-thought-regexp-at))))
 
+(defun thought-manage-thought-end-point ()
+  (save-excursion
+    (if (re-search-forward thought-end nil :move)
+        (progn
+          (previous-line 2)
+          (line-end-position))
+      (point-max))))
+
 (defun thought-manage-back-to-current-thought ()
   (beginning-of-line)
   (while (not (thought-manage-at-current-thought-p))
@@ -59,21 +67,27 @@
 (defun thought-manage-fold ()
   (interactive)
   (thought-manage-back-to-current-thought)
-    (thought-manage-fold-region
-     (line-end-position)
-     (save-excursion
-       (re-search-forward thought-end)
-       (previous-line 2)
-       (line-end-position))
-     t))
+  (thought-manage-fold-region
+   (line-end-position)
+   (thought-manage-thought-end-point)
+   t))
 
-;; (local-set-key (kbd "TAB") #'thought-manage-fold)
-;; (local-set-key (kbd "<backtab>") #'thought-manage-show-all)
+;; (local-set-key (kbd "TAB") #'thought-manage-show)
+;; (local-set-key (kbd "<backtab>") #'thought-manage-fold-all)
 
 (defun thought-manage-show ()
   "keep current folding level, unfold thought and fold again with 1+ folding level")
 
-(defun thought-manage-fold-all ())
+(defun thought-manage-fold-all ()
+  "see `org-cycle-overview'"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (when (thought-manage-at-current-thought-p)
+        (thought-manage-fold))
+      (forward-line))))
+
 
 ;; fold
 
