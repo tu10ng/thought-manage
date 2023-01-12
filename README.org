@@ -29,8 +29,10 @@ not sure
   + current thought
   + old thought
 - incident
+- blank line
 - hide indicator
-
+- fold
+  fold acts on the beginning of the going to be folded, and ends on the beginning of the blank line
 ** structure
 #+begin_quote
 current thought
@@ -65,6 +67,7 @@ readin the thought & incident, and move the whole thought to the front of the fi
 *** to show everything in one file, and use editors `hiding block' feature to clear away old thoughts
 - easy git management
 - im not good at elisp
+- using text-properties instead of overlay seems like a common practice
 
 *** use a program to manage the pure text file's content, and sending commands to program to get old thoughts
 - need way to export and inport data

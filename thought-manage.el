@@ -35,29 +35,39 @@
 
 ;;
 
-(defvar current-thought-regexp-back "^\s*\n"
-  "regular expression to match the line before a current-thought")
+(defvar thought-manage-thought-regexp "^[^ \n]+?"
+  "regular expression to match the the frist char in any line in a thought. the reverse match is the blank lines.")
 
-(defvar current-thought-regexp-at ".*"
-  "regular expression to match the beginning of a current-thought")
-
-(defvar thought-end current-thought-regexp-back)
+(defvar thought-manage-incident-regexp "^<-.*$")
 
 (defun thought-manage-at-current-thought-p ()
-  "return t if point is on current-thought"
+  "return t if point is at the beggining of current-thought"
   (save-excursion
-    (beginning-of-line)
     (and (bolp)
-         (looking-back current-thought-regexp-back)
-         (looking-at current-thought-regexp-at))))
+         (or (bobp)
+             (save-excursion
+               (previous-line)
+               (not (looking-at-p thought-manage-thought-regexp))))
+         (looking-at-p thought-manage-thought-regexp))))
+
+(defun thought-manage-at-thought-end-p ()
+  (save-excursion
+    (and (bolp)
+         (and (not (bobp))
+              (save-excursion
+                (previous-line)
+                (looking-at-p thought-manage-thought-regexp)))
+         (not (looking-at-p thought-manage-thought-regexp)))))
+
+(defun thought-manage-at-thought-p ()
+  (looking-at-p thought-manage-thought-regexp))
 
 (defun thought-manage-thought-end-point ()
   (save-excursion
-    (if (re-search-forward thought-end nil :move)
-        (progn
-          (previous-line 2)
-          (line-end-position))
-      (point-max))))
+    (beginning-of-line)
+    (while (not (thought-manage-at-thought-end-p))
+      (next-line))
+    (point)))
 
 (defun thought-manage-back-to-current-thought ()
   (beginning-of-line)
@@ -66,17 +76,46 @@
 
 (defun thought-manage-fold ()
   (interactive)
-  (thought-manage-back-to-current-thought)
-  (thought-manage-fold-region
-   (line-end-position)
-   (thought-manage-thought-end-point)
-   t))
+  (when (thought-manage-at-thought-p)
+    (thought-manage-back-to-current-thought)
+    (thought-manage-fold-region
+     (1+ (line-end-position))
+     (thought-manage-thought-end-point)
+     t)))
 
-;; (local-set-key (kbd "TAB") #'thought-manage-show)
-;; (local-set-key (kbd "<backtab>") #'thought-manage-fold-all)
+(defun thought-manage-count-incident ()
+  (save-excursion
+    (let ((count 0))
+      (while (re-search-forward
+              thought-manage-incident-regexp
+              (save-excursion
+                (goto-char (thought-manage-thought-end-point))
+                (previous-line)
+                (line-end-position))
+              :move)
+        (setq count (1+ count)))
+      count)))
 
 (defun thought-manage-show ()
-  "keep current folding level, unfold thought and fold again with 1+ folding level")
+  "keep current folding level, unfold thought and fold again with 1+ folding level"
+  (interactive)
+  (save-excursion
+    (thought-manage-back-to-current-thought)
+    (let* ((current-level (thought-manage-count-incident))
+           (next-level (1+ current-level))
+           (start-point (save-excursion
+                          (goto-char (line-end-position))
+                          (thought-manage-fold-region (point)
+                                                      (thought-manage-thought-end-point)
+                                                      nil)
+                          (when (<= next-level (thought-manage-count-incident))
+                            (dotimes (_ next-level)
+                              (re-search-forward
+                               thought-manage-incident-regexp
+                               (thought-manage-thought-end-point))))
+                          (1+ (point))))
+           (end-point (thought-manage-thought-end-point)))
+      (thought-manage-fold-region start-point end-point t))))
 
 (defun thought-manage-fold-all ()
   "see `org-cycle-overview'"
@@ -86,7 +125,8 @@
     (while (not (eobp))
       (when (thought-manage-at-current-thought-p)
         (thought-manage-fold))
-      (forward-line))))
+      (let ((next-line-add-newlines nil))
+        (forward-visible-line 1)))))
 
 
 ;; fold
