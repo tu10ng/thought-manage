@@ -43,6 +43,7 @@
     (define-key map (kbd "<backtab>") #'thought-manage-fold-all)
     map))
 
+;;;###autoload
 (define-derived-mode thought-manage-mode text-mode "Thought Manage"
   "Set major mode for thought manage
 
@@ -50,6 +51,7 @@
 "
   (setq-local font-lock-defaults
               '(thought-manage-font-lock-keywords))
+  (thought-manage-fold-all)
   (add-hook 'change-major-mode-hook #'thought-manage-show-all))
 
 (add-to-list 'auto-mode-alist
