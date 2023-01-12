@@ -13,27 +13,6 @@
   :prefix "thought-manage-"
   :group 'text)
 
-
-;; major mode
-
-(defvar thought-manage-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "TAB") #'thought-manage-show)
-    (define-key map (kbd "<backtab>") #'thought-manage-fold-all)
-    map))
-
-(defvar thought-manage-font-lock-defaults
-  `((("<-\\.\\*" . thought-manage-incident-faces))))
-
-;; thought-manage-mode-hook
-(define-derived-mode thought-manage-mode text-mode "Thought Manage"
-  "Set major mode for thought manage
-
-\\{thought-manage-mode-map}
-"
-  (add-hook 'change-major-mode-hook #'thought-manage-show-all))
-
-  
 
 
 ;; font lock
@@ -44,10 +23,35 @@
   :group 'thought-manage
   :group 'faces)
 
-(defface thought-manage-incident-faces
+(defface thought-manage-incident-face
   '((t (:inherit underline)))
   "face for incident"
   :group 'thought-manage-faces)
+
+(defvar thought-manage-incident-face 'thought-manage-incident-face
+  "see `outline-font-lock-faces'")
+
+(defvar thought-manage-font-lock-keywords
+  '(("^<-\\(.*\\)" 1 thought-manage-incident-face)))
+
+
+;; major mode
+
+(defvar thought-manage-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "TAB") #'thought-manage-show)
+    (define-key map (kbd "<backtab>") #'thought-manage-fold-all)
+    map))
+
+(define-derived-mode thought-manage-mode text-mode "Thought Manage"
+  "Set major mode for thought manage
+
+\\{thought-manage-mode-map}
+"
+  (setq-local font-lock-defaults
+              '(thought-manage-font-lock-keywords))
+  (add-hook 'change-major-mode-hook #'thought-manage-show-all))
+
 
 ;; helper functions
 
@@ -89,7 +93,6 @@
   (beginning-of-line)
   (while (not (thought-manage-at-current-thought-p))
     (previous-line)))
-
 
 
 ;; fold
