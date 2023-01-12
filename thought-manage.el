@@ -230,3 +230,22 @@ sincident: ")
   (interactive)
   (save-excursion
     (replace-regexp "^[ ]*\n+" "\n" nil (point-min) (point-max))))
+
+
+;;; Finish up
+(provide 'thought-manage)
+
+;;; thought-manage.el ends here
+
+
+
+
+
+
+
+
+
+
+
+
+

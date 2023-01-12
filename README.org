@@ -23,6 +23,20 @@ should sleep at 10pm
 
 #+end_quote
 
+* usage
+add the directory containing thought-manage.el to your load-path, and then require.
+
+then open a file like "something.thought" or "M-x thought-manage-mode" in some buffer.
+
+you can use "C-h m" to see useful keybindings.
+
+example:
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/site-lisp/thought-manage/")
+(require 'thought-manage)
+
+#+end_src
+
 * implementation details
 ** keywords
 - whole thought
