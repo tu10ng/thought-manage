@@ -55,23 +55,19 @@ current thought
 <-incident...
 BLANK LINES
 #+end_quote
-
 ** how to add thoughts
 use two seperate function
 - `add new thought to current thought'
 - `add new thought
 
 readin the thought & incident, and move the whole thought to the front of the file
-
 ** how to hide old thoughts
 *** to show everything in one file, and use editors `hiding block' feature to clear away old thoughts
 - easy git management
 - im not good at elisp
 - using text-properties instead of overlay seems like a common practice
-
 *** use a program to manage the pure text file's content, and sending commands to program to get old thoughts
 - need way to export and inport data
-  
 ** how to only show precise level of old thoughts
 one tab on the level shows one level, one shift tab hides all
 ** how to manage `multiple incident to one thought'
@@ -79,11 +75,11 @@ one tab on the level shows one level, one shift tab hides all
   #+begin_quote
 happy <-_reading_- happy <-_gaming_-
   #+end_quote
-
 ** incident could be a long story, maybe need to be paragraph
 not sure
 
 maybe wouldn't happen
+** need? comment
 
 * the reason behind the project
 - i should gather all my thoughts

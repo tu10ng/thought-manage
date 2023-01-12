@@ -3,10 +3,8 @@
 
 ;; 
 
-
 ;;; Code:
 
-(require 'org-fold-core)
 
 ;; Customization
 
@@ -15,9 +13,27 @@
   :prefix "thought-manage-"
   :group 'text)
 
-;; thought-manage-mode-hook
 
-;; 
+;; major mode
+
+(defvar thought-manage-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "TAB") #'thought-manage-show)
+    (define-key map (kbd "<backtab>") #'thought-manage-fold-all)
+    map))
+
+(defvar thought-manage-font-lock-defaults
+  `((("<-\\.\\*" . thought-manage-incident-faces))))
+
+;; thought-manage-mode-hook
+(define-derived-mode thought-manage-mode text-mode "Thought Manage"
+  "Set major mode for thought manage
+
+\\{thought-manage-mode-map}
+"
+  (add-hook 'change-major-mode-hook #'thought-manage-show-all))
+
+  
 
 
 ;; font lock
@@ -33,7 +49,7 @@
   "face for incident"
   :group 'thought-manage-faces)
 
-;;
+;; helper functions
 
 (defvar thought-manage-thought-regexp "^[^ \n]+?"
   "regular expression to match the the frist char in any line in a thought. the reverse match is the blank lines.")
@@ -73,6 +89,23 @@
   (beginning-of-line)
   (while (not (thought-manage-at-current-thought-p))
     (previous-line)))
+
+
+
+;; fold
+
+(defun thought-manage-fold-region (from to flag)
+  "hide or show lines from FROM to TO, according to FLAG.
+see `org-fold-core-region'"
+  (with-silent-modifications
+    (if flag
+        (put-text-property from to 'invisible t)
+	  (remove-text-properties from to (list 'invisible nil)))))
+
+(defun thought-manage-show-all ()
+  "Show all contents. maybe useless"
+  (interactive)
+  (thought-manage-fold-region (point-min) (point-max) nil))
 
 (defun thought-manage-fold ()
   (interactive)
@@ -128,19 +161,4 @@
       (let ((next-line-add-newlines nil))
         (forward-visible-line 1)))))
 
-
-;; fold
-
-(defun thought-manage-fold-region (from to flag)
-  "hide or show lines from FROM to TO, according to FLAG.
-see `org-fold-core-region'"
-  (with-silent-modifications
-    (if flag
-        (put-text-property from to 'invisible t)
-	  (remove-text-properties from to (list 'invisible nil)))))
-
-(defun thought-manage-show-all ()
-  "Show all contents. maybe useless"
-  (interactive)
-  (thought-manage-fold-region (point-min) (point-max) nil))
 
