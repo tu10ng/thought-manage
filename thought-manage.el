@@ -13,7 +13,13 @@
   :prefix "thought-manage-"
   :group 'text)
 
+(defcustom thought-manage-disable-auto-remove-blank-line nil
+  "disable auto remove multiple blank lines after save"
+  :type 'boolean)
 
+(defcustom thought-manage-show-everything-startup nil
+  "do not recommend for philosophy"
+  :type 'boolean)
 
 ;; font lock
 (require 'font-lock)
@@ -41,21 +47,32 @@
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "TAB") #'thought-manage-show)
     (define-key map (kbd "<backtab>") #'thought-manage-fold-all)
+    (define-key map (kbd "C-c y n") #'thought-manage-add-thought-to-thought)
+    (define-key map (kbd "C-c y i") #'thought-manage-add-thought-init)
+    (define-key map (kbd "C-c y a") #'thought-manage-show-all)    
     map))
 
 ;;;###autoload
 (define-derived-mode thought-manage-mode text-mode "Thought Manage"
-  "Set major mode for thought manage
+  "major mode for thought management
+
+file extension types are .thought or .tm
+
+the following commands are available:
 
 \\{thought-manage-mode-map}
 "
   (setq-local font-lock-defaults
               '(thought-manage-font-lock-keywords))
-  (thought-manage-fold-all)
-  (add-hook 'change-major-mode-hook #'thought-manage-show-all))
+  (unless thought-manage-show-everything-startup
+    (thought-manage-fold-all))
+  (add-hook 'change-major-mode-hook #'thought-manage-show-all 0 t)
+  (unless thought-manage-disable-auto-remove-blank-line
+    (add-hook 'after-save-hook #'thought-manage-remove-blank-lines 0 t)))
 
 (add-to-list 'auto-mode-alist
              '("\\.\\(?:tm\\|thought\\)\\'" . thought-manage-mode))
+
 
 ;; helper functions
 
@@ -75,6 +92,7 @@
          (looking-at-p thought-manage-thought-regexp))))
 
 (defun thought-manage-at-thought-end-p ()
+  "return t if point is at the beggining of the blank line which is just after the thought"
   (save-excursion
     (and (bolp)
          (and (not (bobp))
@@ -84,6 +102,8 @@
          (not (looking-at-p thought-manage-thought-regexp)))))
 
 (defun thought-manage-at-thought-p ()
+  "return t if point is in the thought, in other words, not on blank line.
+`thought-manage-at-thought-p' is t when `thought-manage-at-thought-end-p' is t because its on the blank line."
   (looking-at-p thought-manage-thought-regexp))
 
 (defun thought-manage-thought-end-point ()
@@ -94,6 +114,7 @@
     (point)))
 
 (defun thought-manage-back-to-current-thought ()
+  "move point to the beggining of the first line of thought(current thought)."
   (beginning-of-line)
   (while (not (thought-manage-at-current-thought-p))
     (previous-line)))
@@ -110,11 +131,12 @@ see `org-fold-core-region'"
 	  (remove-text-properties from to (list 'invisible nil)))))
 
 (defun thought-manage-show-all ()
-  "Show all contents. maybe useless"
+  "Show all contents. maybe useless in design philosophy but useful in playing around"
   (interactive)
   (thought-manage-fold-region (point-min) (point-max) nil))
 
 (defun thought-manage-fold ()
+  "fold from the beginning of the thought, ends on the beginning of the first blank line encounterd"
   (interactive)
   (when (thought-manage-at-thought-p)
     (thought-manage-back-to-current-thought)
@@ -124,6 +146,8 @@ see `org-fold-core-region'"
      t)))
 
 (defun thought-manage-count-incident ()
+  "how many incident is shown under current visibility.
+0 after called `thought-manage-folded'"
   (save-excursion
     (let ((count 0))
       (while (re-search-forward
@@ -137,7 +161,7 @@ see `org-fold-core-region'"
       count)))
 
 (defun thought-manage-show ()
-  "keep current folding level, unfold thought and fold again with 1+ folding level"
+  "show one more old thought & incident by showing 1+ current folding level"
   (interactive)
   (save-excursion
     (thought-manage-back-to-current-thought)
@@ -169,3 +193,40 @@ see `org-fold-core-region'"
         (forward-visible-line 1)))))
 
 
+;; add thought
+
+(defun thought-manage-add-thought-to-thought (thought incident)
+  "add thought and incident to the thought at point, and move the whole thought to the beggining of the file"
+  (interactive "sthought:
+sincident: ")
+  (thought-manage-back-to-current-thought)
+  (insert (format "%s\n<-%s\n" thought incident))  
+  (thought-manage-back-to-current-thought)  
+  (thought-manage-move-thought-to-front)
+  )
+
+(defun thought-manage-move-thought-to-front ()
+  "move whole thought to beggining of the file for design philosophy.
+see `move-text-region'"
+  (save-excursion
+    (thought-manage-back-to-current-thought)
+    (let ((thought (delete-and-extract-region
+                    (point)
+                    (thought-manage-thought-end-point))))
+      (goto-char (point-min))
+      (insert thought))))
+
+(defun thought-manage-add-thought-init (thought incident)
+  "init a thought at the beggining of the file"
+  (interactive "sthought:
+sincident: ")
+  (goto-char (point-min))
+  (insert (format "%s\n<-%s\n\n" thought incident)))
+
+
+;; utils
+(defun thought-manage-remove-blank-lines ()
+  "remove abundant blank lines, leave one behind"
+  (interactive)
+  (save-excursion
+    (replace-regexp "^[ ]*\n+" "\n" nil (point-min) (point-max))))
