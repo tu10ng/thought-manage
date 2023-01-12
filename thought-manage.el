@@ -52,6 +52,8 @@
               '(thought-manage-font-lock-keywords))
   (add-hook 'change-major-mode-hook #'thought-manage-show-all))
 
+(add-to-list 'auto-mode-alist
+             '("\\.\\(?:tm\\|thought\\)\\'" . thought-manage-mode))
 
 ;; helper functions
 
