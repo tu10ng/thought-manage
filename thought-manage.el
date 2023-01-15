@@ -76,7 +76,7 @@ the following commands are available:
 
 ;; helper functions
 
-(defvar thought-manage-thought-regexp "^[^ \n]+?"
+(defvar thought-manage-thought-regexp "[^ \n]+?"
   "regular expression to match the the frist char in any line in a thought. the reverse match is the blank lines.")
 
 (defvar thought-manage-incident-regexp "^<-.*$")
