@@ -94,6 +94,7 @@ not sure
 
 maybe wouldn't happen
 ** TODO do we need comment
+** when exporting (maybe to html), add a horizontal line to indicate changed thought since last export
 
 * the reason behind the project
 - i should gather all my thoughts
@@ -105,3 +106,6 @@ maybe wouldn't happen
 - a good tool can help me record my thoughts
 
 - maybe its just another presentation of diary
+
+* bugs
+** FIXED bug(newline): when opening thought file, buffer calls newline manymany times

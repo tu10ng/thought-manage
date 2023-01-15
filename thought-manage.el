@@ -97,7 +97,7 @@ the following commands are available:
     (and (bolp)
          (and (not (bobp))
               (save-excursion
-                (previous-line)
+                (previous-logical-line)
                 (looking-at-p thought-manage-thought-regexp)))
          (not (looking-at-p thought-manage-thought-regexp)))))
 
@@ -108,16 +108,14 @@ the following commands are available:
 
 (defun thought-manage-thought-end-point ()
   (save-excursion
-    (beginning-of-line)
-    (while (not (thought-manage-at-thought-end-p))
-      (next-line))
+    (forward-paragraph)
     (point)))
 
 (defun thought-manage-back-to-current-thought ()
   "move point to the beggining of the first line of thought(current thought)."
   (beginning-of-line)
   (while (not (thought-manage-at-current-thought-p))
-    (previous-line)))
+    (previous-logical-line)))
 
 
 ;; fold
@@ -154,7 +152,7 @@ see `org-fold-core-region'"
               thought-manage-incident-regexp
               (save-excursion
                 (goto-char (thought-manage-thought-end-point))
-                (previous-line)
+                (previous-logical-line)
                 (line-end-position))
               :move)
         (setq count (1+ count)))
@@ -236,16 +234,3 @@ sincident: ")
 (provide 'thought-manage)
 
 ;;; thought-manage.el ends here
-
-
-
-
-
-
-
-
-
-
-
-
-
